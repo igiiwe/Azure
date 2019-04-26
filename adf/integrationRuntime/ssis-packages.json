@@ -1,0 +1,32 @@
+{
+	"name": "ssis-packages",
+	"properties": {
+		"type": "Managed",
+		"description": "This pipeline create SSIS  package",
+		"typeProperties": {
+			"computeProperties": {
+				"location": "North Europe",
+				"nodeSize": "Standard_D8_v3",
+				"numberOfNodes": 1,
+				"maxParallelExecutionsPerNode": 2,
+				"vNetProperties": {
+					"vNetId": "/subscriptions/d27f576d-a452-4216-835d-f721cc61236f/resourceGroups/MyDemo/providers/Microsoft.Network/virtualNetworks/MyDemo-vnet",
+					"subnet": "default"
+				}
+			},
+			"ssisProperties": {
+				"catalogInfo": {
+					"catalogServerEndpoint": "theazure.database.windows.net",
+					"catalogAdminUserName": "igiiwe",
+					"catalogAdminPassword": {
+						"type": "SecureString",
+						"value": "**********"
+					},
+					"catalogPricingTier": "S1"
+				},
+				"edition": "Standard",
+				"licenseType": "LicenseIncluded"
+			}
+		}
+	}
+}
