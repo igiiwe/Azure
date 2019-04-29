@@ -1,0 +1,9 @@
+{
+	"name": "AzureKeyvault",
+	"properties": {
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://ssiskey.vault.azure.net/"
+		}
+	}
+}
