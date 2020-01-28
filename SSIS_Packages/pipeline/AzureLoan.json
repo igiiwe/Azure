@@ -1,0 +1,33 @@
+{
+	"name": "AzureLoan",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Loan package",
+				"type": "ExecuteSSISPackage",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"packageLocation": {
+						"packagePath": "C:\\Users\\oasobogungod\\source\\repos\\AzureLoan\\AzureLoan\\AzureLoan.dtx",
+						"type": "SSISDB"
+					},
+					"connectVia": {
+						"referenceName": "AzureSSIS-IR",
+						"type": "IntegrationRuntimeReference"
+					},
+					"loggingLevel": "Basic"
+				}
+			}
+		],
+		"annotations": []
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

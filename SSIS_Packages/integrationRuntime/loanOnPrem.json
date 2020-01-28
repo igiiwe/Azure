@@ -1,0 +1,7 @@
+{
+	"name": "loanOnPrem",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "This is the on premise Integration RunTime"
+	}
+}
