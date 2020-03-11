@@ -26,6 +26,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "pipelineData"
+		},
 		"annotations": []
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
