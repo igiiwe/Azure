@@ -1,0 +1,9 @@
+{
+	"name": "MovePackage",
+	"properties": {
+		"folder": {
+			"name": "pipelineData"
+		},
+		"annotations": []
+	}
+}
