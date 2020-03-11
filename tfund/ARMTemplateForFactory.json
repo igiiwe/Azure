@@ -1,0 +1,724 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "tfund"
+		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"container_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'container'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/TransformPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "dataTransfer",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SalesMarket",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Sales": {},
+									"AzureDatabase": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"folder": {
+					"name": "pipelineData"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SalesMarket')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/csvFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "container",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "csvfile"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/container')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/tfund_database')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Column_1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "borough",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "neighborhood",
+						"type": "nvarchar"
+					},
+					{
+						"name": "building_class_category",
+						"type": "nvarchar"
+					},
+					{
+						"name": "tax_class",
+						"type": "nvarchar"
+					},
+					{
+						"name": "block",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "lot",
+						"type": "nvarchar"
+					},
+					{
+						"name": "easement",
+						"type": "nvarchar"
+					},
+					{
+						"name": "building_class",
+						"type": "nvarchar"
+					},
+					{
+						"name": "address",
+						"type": "nvarchar"
+					},
+					{
+						"name": "apartment_number",
+						"type": "nvarchar"
+					},
+					{
+						"name": "zip_code",
+						"type": "nvarchar"
+					},
+					{
+						"name": "residential_units",
+						"type": "nvarchar"
+					},
+					{
+						"name": "commercial_units",
+						"type": "nvarchar"
+					},
+					{
+						"name": "total_units",
+						"type": "nvarchar"
+					},
+					{
+						"name": "land_sqft",
+						"type": "nvarchar"
+					},
+					{
+						"name": "gross_sqft",
+						"type": "nvarchar"
+					},
+					{
+						"name": "year_built",
+						"type": "nvarchar"
+					},
+					{
+						"name": "tax_class_at_sale",
+						"type": "nvarchar"
+					},
+					{
+						"name": "building_class_at_sale",
+						"type": "nvarchar"
+					},
+					{
+						"name": "sale_price",
+						"type": "float",
+						"precision": 15
+					},
+					{
+						"name": "year_of_sale",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Borough1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CD",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CT2010",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CB2010",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SchoolDist",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Council",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZipCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FireComp",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PolicePrct",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HealthCent",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HealthArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SanitBoro",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SanitDistr",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SanitSub",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Address1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZoneDist1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZoneDist2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZoneDist3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZoneDist4",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Overlay1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Overlay2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SPDist1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SPDist2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SPDist3",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LtdHeight",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SplitZone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BldgClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LandUse",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Easements",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OwnerType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OwnerName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LotArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BldgArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ComArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ResArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OfficeArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "RetailArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "GarageArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "StrgeArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FactryArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "OtherArea",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AreaSource",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumBldgs",
+						"type": "nvarchar"
+					},
+					{
+						"name": "NumFloors",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UnitsRes",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UnitsTotal",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LotFront",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LotDepth",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BldgFront",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BldgDepth",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Ext",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ProxCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IrrLotCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LotType",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BsmtCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AssessLand",
+						"type": "nvarchar"
+					},
+					{
+						"name": "AssessTot",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ExemptLand",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ExemptTot",
+						"type": "nvarchar"
+					},
+					{
+						"name": "YearBuilt",
+						"type": "nvarchar"
+					},
+					{
+						"name": "YearAlter1",
+						"type": "nvarchar"
+					},
+					{
+						"name": "YearAlter2",
+						"type": "nvarchar"
+					},
+					{
+						"name": "HistDist",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Landmark",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BuiltFAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ResidFAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CommFAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FacilFAR",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BoroCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "BBL",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CondoNo",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Tract2010",
+						"type": "nvarchar"
+					},
+					{
+						"name": "XCoord",
+						"type": "nvarchar"
+					},
+					{
+						"name": "YCoord",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZoneMap",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ZMCode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Sanborn",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TaxMap",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EDesigNum",
+						"type": "nvarchar"
+					},
+					{
+						"name": "APPBBL",
+						"type": "nvarchar"
+					},
+					{
+						"name": "APPDate",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PLUTOMapID",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FIRM07_FLA",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PFIRM15_FL",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Version",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MAPPLUTO_F",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SHAPE_Leng",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SHAPE_Area",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Sales_date",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Housing_sale"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/container')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('container_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OnPremHost')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SalesMarket')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "sale data Import",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "csvFile",
+								"type": "DatasetReference"
+							},
+							"name": "Sales"
+						},
+						{
+							"dataset": {
+								"referenceName": "tfund_database",
+								"type": "DatasetReference"
+							},
+							"name": "AzureDatabase"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "tfund_database",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Mergedataset"
+						}
+					],
+					"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string,\n\t\tColumn_8 as string,\n\t\tColumn_9 as string,\n\t\tColumn_10 as string,\n\t\tColumn_11 as string,\n\t\tColumn_12 as string,\n\t\tColumn_13 as string,\n\t\tColumn_14 as string,\n\t\tColumn_15 as string,\n\t\tColumn_16 as string,\n\t\tColumn_17 as string,\n\t\tColumn_18 as string,\n\t\tColumn_19 as string,\n\t\tColumn_20 as string,\n\t\tColumn_21 as string,\n\t\tColumn_22 as string,\n\t\tColumn_23 as string,\n\t\tColumn_24 as string,\n\t\tColumn_25 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Sales\nsource(output(\n\t\tColumn_1 as string,\n\t\tborough as integer,\n\t\tneighborhood as string,\n\t\tbuilding_class_category as string,\n\t\ttax_class as string,\n\t\tblock as integer,\n\t\tlot as string,\n\t\teasement as string,\n\t\tbuilding_class as string,\n\t\taddress as string,\n\t\tapartment_number as string,\n\t\tzip_code as string,\n\t\tresidential_units as string,\n\t\tcommercial_units as string,\n\t\ttotal_units as string,\n\t\tland_sqft as string,\n\t\tgross_sqft as string,\n\t\tyear_built as string,\n\t\ttax_class_at_sale as string,\n\t\tbuilding_class_at_sale as string,\n\t\tsale_price as double,\n\t\tyear_of_sale as integer,\n\t\tBorough1 as string,\n\t\tCD as string,\n\t\tCT2010 as string,\n\t\tCB2010 as string,\n\t\tSchoolDist as string,\n\t\tCouncil as string,\n\t\tZipCode as string,\n\t\tFireComp as string,\n\t\tPolicePrct as string,\n\t\tHealthCent as string,\n\t\tHealthArea as string,\n\t\tSanitBoro as string,\n\t\tSanitDistr as string,\n\t\tSanitSub as string,\n\t\tAddress1 as string,\n\t\tZoneDist1 as string,\n\t\tZoneDist2 as string,\n\t\tZoneDist3 as string,\n\t\tZoneDist4 as string,\n\t\tOverlay1 as string,\n\t\tOverlay2 as string,\n\t\tSPDist1 as string,\n\t\tSPDist2 as string,\n\t\tSPDist3 as string,\n\t\tLtdHeight as string,\n\t\tSplitZone as string,\n\t\tBldgClass as string,\n\t\tLandUse as string,\n\t\tEasements as string,\n\t\tOwnerType as string,\n\t\tOwnerName as string,\n\t\tLotArea as string,\n\t\tBldgArea as string,\n\t\tComArea as string,\n\t\tResArea as string,\n\t\tOfficeArea as string,\n\t\tRetailArea as string,\n\t\tGarageArea as string,\n\t\tStrgeArea as string,\n\t\tFactryArea as string,\n\t\tOtherArea as string,\n\t\tAreaSource as string,\n\t\tNumBldgs as string,\n\t\tNumFloors as string,\n\t\tUnitsRes as string,\n\t\tUnitsTotal as string,\n\t\tLotFront as string,\n\t\tLotDepth as string,\n\t\tBldgFront as string,\n\t\tBldgDepth as string,\n\t\tExt as string,\n\t\tProxCode as string,\n\t\tIrrLotCode as string,\n\t\tLotType as string,\n\t\tBsmtCode as string,\n\t\tAssessLand as string,\n\t\tAssessTot as string,\n\t\tExemptLand as string,\n\t\tExemptTot as string,\n\t\tYearBuilt as string,\n\t\tYearAlter1 as string,\n\t\tYearAlter2 as string,\n\t\tHistDist as string,\n\t\tLandmark as string,\n\t\tBuiltFAR as string,\n\t\tResidFAR as string,\n\t\tCommFAR as string,\n\t\tFacilFAR as string,\n\t\tBoroCode as string,\n\t\tBBL as string,\n\t\tCondoNo as string,\n\t\tTract2010 as string,\n\t\tXCoord as string,\n\t\tYCoord as string,\n\t\tZoneMap as string,\n\t\tZMCode as string,\n\t\tSanborn as string,\n\t\tTaxMap as string,\n\t\tEDesigNum as string,\n\t\tAPPBBL as string,\n\t\tAPPDate as string,\n\t\tPLUTOMapID as string,\n\t\tFIRM07_FLA as string,\n\t\tPFIRM15_FL as string,\n\t\tVersion as string,\n\t\tMAPPLUTO_F as string,\n\t\tSHAPE_Leng as string,\n\t\tSHAPE_Area as string,\n\t\tSales_date as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureDatabase\nSales, AzureDatabase union(byName: true,\n\tpartitionBy('hash', 1))~> Mergedataset\nMergedataset sink(input(\n\t\tColumn_1 as string,\n\t\tborough as integer,\n\t\tneighborhood as string,\n\t\tbuilding_class_category as string,\n\t\ttax_class as string,\n\t\tblock as integer,\n\t\tlot as string,\n\t\teasement as string,\n\t\tbuilding_class as string,\n\t\taddress as string,\n\t\tapartment_number as string,\n\t\tzip_code as string,\n\t\tresidential_units as string,\n\t\tcommercial_units as string,\n\t\ttotal_units as string,\n\t\tland_sqft as string,\n\t\tgross_sqft as string,\n\t\tyear_built as string,\n\t\ttax_class_at_sale as string,\n\t\tbuilding_class_at_sale as string,\n\t\tsale_price as double,\n\t\tyear_of_sale as integer,\n\t\tBorough1 as string,\n\t\tCD as string,\n\t\tCT2010 as string,\n\t\tCB2010 as string,\n\t\tSchoolDist as string,\n\t\tCouncil as string,\n\t\tZipCode as string,\n\t\tFireComp as string,\n\t\tPolicePrct as string,\n\t\tHealthCent as string,\n\t\tHealthArea as string,\n\t\tSanitBoro as string,\n\t\tSanitDistr as string,\n\t\tSanitSub as string,\n\t\tAddress1 as string,\n\t\tZoneDist1 as string,\n\t\tZoneDist2 as string,\n\t\tZoneDist3 as string,\n\t\tZoneDist4 as string,\n\t\tOverlay1 as string,\n\t\tOverlay2 as string,\n\t\tSPDist1 as string,\n\t\tSPDist2 as string,\n\t\tSPDist3 as string,\n\t\tLtdHeight as string,\n\t\tSplitZone as string,\n\t\tBldgClass as string,\n\t\tLandUse as string,\n\t\tEasements as string,\n\t\tOwnerType as string,\n\t\tOwnerName as string,\n\t\tLotArea as string,\n\t\tBldgArea as string,\n\t\tComArea as string,\n\t\tResArea as string,\n\t\tOfficeArea as string,\n\t\tRetailArea as string,\n\t\tGarageArea as string,\n\t\tStrgeArea as string,\n\t\tFactryArea as string,\n\t\tOtherArea as string,\n\t\tAreaSource as string,\n\t\tNumBldgs as string,\n\t\tNumFloors as string,\n\t\tUnitsRes as string,\n\t\tUnitsTotal as string,\n\t\tLotFront as string,\n\t\tLotDepth as string,\n\t\tBldgFront as string,\n\t\tBldgDepth as string,\n\t\tExt as string,\n\t\tProxCode as string,\n\t\tIrrLotCode as string,\n\t\tLotType as string,\n\t\tBsmtCode as string,\n\t\tAssessLand as string,\n\t\tAssessTot as string,\n\t\tExemptLand as string,\n\t\tExemptTot as string,\n\t\tYearBuilt as string,\n\t\tYearAlter1 as string,\n\t\tYearAlter2 as string,\n\t\tHistDist as string,\n\t\tLandmark as string,\n\t\tBuiltFAR as string,\n\t\tResidFAR as string,\n\t\tCommFAR as string,\n\t\tFacilFAR as string,\n\t\tBoroCode as string,\n\t\tBBL as string,\n\t\tCondoNo as string,\n\t\tTract2010 as string,\n\t\tXCoord as string,\n\t\tYCoord as string,\n\t\tZoneMap as string,\n\t\tZMCode as string,\n\t\tSanborn as string,\n\t\tTaxMap as string,\n\t\tEDesigNum as string,\n\t\tAPPBBL as string,\n\t\tAPPDate as string,\n\t\tPLUTOMapID as string,\n\t\tFIRM07_FLA as string,\n\t\tPFIRM15_FL as string,\n\t\tVersion as string,\n\t\tMAPPLUTO_F as string,\n\t\tSHAPE_Leng as string,\n\t\tSHAPE_Area as string,\n\t\tSales_date as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/csvFile')]",
+				"[concat(variables('factoryId'), '/datasets/tfund_database')]"
+			]
+		}
+	]
+}
