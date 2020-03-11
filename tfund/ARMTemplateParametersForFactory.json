@@ -10,6 +10,15 @@
 		},
 		"container_connectionString": {
 			"value": ""
+		},
+		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
+			"value": "tfund.database.windows.net"
+		},
+		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminUserName": {
+			"value": "igiiwe"
+		},
+		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
+			"value": ""
 		}
 	}
 }
