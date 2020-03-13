@@ -1,0 +1,6 @@
+{
+	"name": "streamAnalytics",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
