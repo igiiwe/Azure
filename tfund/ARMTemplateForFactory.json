@@ -844,7 +844,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/TSQL2012')]",
+			"name": "[concat(parameters('factoryName'), '/NorthwindDB')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1019,9 +1019,16 @@
 						]
 					},
 					{
-						"name": "Copy data1",
+						"name": "OrderTable",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "FromOnPremToCloud",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "7.00:00:00",
 							"retry": 0,
@@ -1031,8 +1038,182 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"enableStaging": false
-						}
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "OrderID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 1
+										}
+									},
+									{
+										"source": {
+											"name": "CustomerID",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 2
+										}
+									},
+									{
+										"source": {
+											"name": "EmployeeID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 3
+										}
+									},
+									{
+										"source": {
+											"name": "OrderDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"type": "DateTime",
+											"ordinal": 4
+										}
+									},
+									{
+										"source": {
+											"name": "RequiredDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"type": "DateTime",
+											"ordinal": 5
+										}
+									},
+									{
+										"source": {
+											"name": "ShippedDate",
+											"type": "DateTime"
+										},
+										"sink": {
+											"type": "DateTime",
+											"ordinal": 6
+										}
+									},
+									{
+										"source": {
+											"name": "ShipVia",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 7
+										}
+									},
+									{
+										"source": {
+											"name": "Freight",
+											"type": "Decimal"
+										},
+										"sink": {
+											"type": "Decimal",
+											"ordinal": 8
+										}
+									},
+									{
+										"source": {
+											"name": "ShipName",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 9
+										}
+									},
+									{
+										"source": {
+											"name": "ShipAddress",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 10
+										}
+									},
+									{
+										"source": {
+											"name": "ShipCity",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 11
+										}
+									},
+									{
+										"source": {
+											"name": "ShipRegion",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 12
+										}
+									},
+									{
+										"source": {
+											"name": "ShipPostalCode",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 13
+										}
+									},
+									{
+										"source": {
+											"name": "ShipCountry",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 14
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "OrderTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "csvFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"folder": {
@@ -1042,7 +1223,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Northwind')]",
-				"[concat(variables('factoryId'), '/datasets/csvFile')]"
+				"[concat(variables('factoryId'), '/datasets/csvFile')]",
+				"[concat(variables('factoryId'), '/datasets/OrderTable')]"
 			]
 		},
 		{
@@ -1155,6 +1337,54 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "OrderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "Quantity",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discount",
+						"type": "real",
+						"precision": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
 		}
 	]
 }
