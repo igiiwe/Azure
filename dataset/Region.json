@@ -1,0 +1,26 @@
+{
+	"name": "Region",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Northwind",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "RegionID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RegionDescription",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Region"
+		}
+	}
+}

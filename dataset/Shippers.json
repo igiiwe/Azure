@@ -1,0 +1,30 @@
+{
+	"name": "Shippers",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Northwind",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "ShipperID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CompanyName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Phone",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Shippers"
+		}
+	}
+}
