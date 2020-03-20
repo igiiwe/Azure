@@ -1,0 +1,21 @@
+{
+	"name": "NtwestDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "container",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "nwdatabase"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

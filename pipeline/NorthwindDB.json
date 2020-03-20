@@ -164,7 +164,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "csvFile",
+						"referenceName": "NtwestDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -352,7 +352,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "csvFile",
+						"referenceName": "NtwestDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -450,7 +450,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "csvFile",
+						"referenceName": "NtwestDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -472,11 +472,53 @@
 						"type": "SqlServerSource",
 						"queryTimeout": "02:00:00"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "RegionID",
+									"type": "Int32"
+								},
+								"sink": {
+									"type": "Int32",
+									"ordinal": 1
+								}
+							},
+							{
+								"source": {
+									"name": "RegionDescription",
+									"type": "String"
+								},
+								"sink": {
+									"type": "String",
+									"ordinal": 2
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "Region",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "NtwestDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -499,9 +541,52 @@
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
-						"type": "SqlServerSink"
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ProductID",
+									"type": "Int32"
+								},
+								"sink": {
+									"type": "Int32",
+									"ordinal": 1
+								}
+							},
+							{
+								"source": {
+									"name": "ProductName",
+									"type": "String"
+								},
+								"sink": {
+									"type": "String",
+									"ordinal": 2
+								}
+							},
+							{
+								"source": {
+									"name": "SupplierID",
+									"type": "Int32"
+								},
+								"sink": {
+									"type": "String",
+									"ordinal": 3
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
@@ -511,7 +596,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Shippers",
+						"referenceName": "NtwestDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -534,7 +619,15 @@
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
-						"type": "SqlServerSink"
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
 					"enableStaging": false,
 					"translator": {
@@ -546,8 +639,8 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "EmployeeID",
-									"type": "Int32"
+									"type": "Int32",
+									"ordinal": 1
 								}
 							},
 							{
@@ -556,8 +649,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "LastName",
-									"type": "String"
+									"type": "String",
+									"ordinal": 2
 								}
 							},
 							{
@@ -566,8 +659,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "FirstName",
-									"type": "String"
+									"type": "String",
+									"ordinal": 3
 								}
 							},
 							{
@@ -576,8 +669,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Title",
-									"type": "String"
+									"type": "String",
+									"ordinal": 4
 								}
 							},
 							{
@@ -586,8 +679,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "TitleOfCourtesy",
-									"type": "String"
+									"type": "String",
+									"ordinal": 5
 								}
 							},
 							{
@@ -596,8 +689,8 @@
 									"type": "DateTime"
 								},
 								"sink": {
-									"name": "BirthDate",
-									"type": "DateTime"
+									"type": "DateTime",
+									"ordinal": 6
 								}
 							},
 							{
@@ -606,8 +699,8 @@
 									"type": "DateTime"
 								},
 								"sink": {
-									"name": "HireDate",
-									"type": "DateTime"
+									"type": "DateTime",
+									"ordinal": 7
 								}
 							},
 							{
@@ -616,8 +709,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Address",
-									"type": "String"
+									"type": "String",
+									"ordinal": 8
 								}
 							},
 							{
@@ -626,8 +719,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "City",
-									"type": "String"
+									"type": "String",
+									"ordinal": 9
 								}
 							},
 							{
@@ -636,8 +729,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Region",
-									"type": "String"
+									"type": "String",
+									"ordinal": 10
 								}
 							},
 							{
@@ -646,8 +739,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "PostalCode",
-									"type": "String"
+									"type": "String",
+									"ordinal": 11
 								}
 							},
 							{
@@ -656,8 +749,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Country",
-									"type": "String"
+									"type": "String",
+									"ordinal": 12
 								}
 							},
 							{
@@ -666,8 +759,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "HomePhone",
-									"type": "String"
+									"type": "String",
+									"ordinal": 13
 								}
 							},
 							{
@@ -676,8 +769,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Extension",
-									"type": "String"
+									"type": "String",
+									"ordinal": 14
 								}
 							},
 							{
@@ -686,8 +779,8 @@
 									"type": "Byte[]"
 								},
 								"sink": {
-									"name": "Photo",
-									"type": "Byte[]"
+									"type": "Byte[]",
+									"ordinal": 15
 								}
 							},
 							{
@@ -696,8 +789,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Notes",
-									"type": "String"
+									"type": "String",
+									"ordinal": 16
 								}
 							},
 							{
@@ -706,8 +799,8 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "ReportsTo",
-									"type": "Int32"
+									"type": "Int32",
+									"ordinal": 17
 								}
 							},
 							{
@@ -716,8 +809,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "PhotoPath",
-									"type": "String"
+									"type": "String",
+									"ordinal": 18
 								}
 							}
 						]
@@ -731,7 +824,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Employee",
+						"referenceName": "NtwestDB",
 						"type": "DatasetReference"
 					}
 				]
@@ -754,7 +847,15 @@
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
-						"type": "SqlServerSink"
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
 					},
 					"enableStaging": false,
 					"translator": {
@@ -766,8 +867,8 @@
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "SupplierID",
-									"type": "Int32"
+									"type": "Int32",
+									"ordinal": 1
 								}
 							},
 							{
@@ -776,8 +877,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "CompanyName",
-									"type": "String"
+									"type": "String",
+									"ordinal": 2
 								}
 							},
 							{
@@ -786,8 +887,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "ContactName",
-									"type": "String"
+									"type": "String",
+									"ordinal": 3
 								}
 							},
 							{
@@ -796,8 +897,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "ContactTitle",
-									"type": "String"
+									"type": "String",
+									"ordinal": 4
 								}
 							},
 							{
@@ -806,8 +907,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Address",
-									"type": "String"
+									"type": "String",
+									"ordinal": 5
 								}
 							},
 							{
@@ -816,8 +917,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "City",
-									"type": "String"
+									"type": "String",
+									"ordinal": 6
 								}
 							},
 							{
@@ -826,8 +927,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Region",
-									"type": "String"
+									"type": "String",
+									"ordinal": 7
 								}
 							},
 							{
@@ -836,8 +937,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "PostalCode",
-									"type": "String"
+									"type": "String",
+									"ordinal": 8
 								}
 							},
 							{
@@ -846,8 +947,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Country",
-									"type": "String"
+									"type": "String",
+									"ordinal": 9
 								}
 							},
 							{
@@ -856,8 +957,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Phone",
-									"type": "String"
+									"type": "String",
+									"ordinal": 10
 								}
 							},
 							{
@@ -866,8 +967,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Fax",
-									"type": "String"
+									"type": "String",
+									"ordinal": 11
 								}
 							},
 							{
@@ -876,8 +977,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "HomePage",
-									"type": "String"
+									"type": "String",
+									"ordinal": 12
 								}
 							}
 						]
@@ -891,7 +992,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Suppliers",
+						"referenceName": "csvFile",
 						"type": "DatasetReference"
 					}
 				]
