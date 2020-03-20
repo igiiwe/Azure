@@ -1,0 +1,6 @@
+{
+	"name": "Northwind",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
