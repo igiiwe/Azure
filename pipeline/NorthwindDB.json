@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "FromOnPremToCloud",
+				"name": "Products",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -172,14 +172,7 @@
 			{
 				"name": "OrderTable",
 				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "FromOnPremToCloud",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
 					"retry": 0,
@@ -354,6 +347,104 @@
 				"inputs": [
 					{
 						"referenceName": "OrderTable",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "csvFile",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Order Detail",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "OrderID",
+									"type": "Int32"
+								},
+								"sink": {
+									"type": "Int32",
+									"ordinal": 1
+								}
+							},
+							{
+								"source": {
+									"name": "ProductID",
+									"type": "Int32"
+								},
+								"sink": {
+									"type": "Int32",
+									"ordinal": 2
+								}
+							},
+							{
+								"source": {
+									"name": "UnitPrice",
+									"type": "Decimal"
+								},
+								"sink": {
+									"type": "Decimal",
+									"ordinal": 3
+								}
+							},
+							{
+								"source": {
+									"name": "Quantity",
+									"type": "Int16"
+								},
+								"sink": {
+									"type": "Int16",
+									"ordinal": 4
+								}
+							},
+							{
+								"source": {
+									"name": "Discount",
+									"type": "Single"
+								},
+								"sink": {
+									"type": "Single",
+									"ordinal": 5
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "OrderDetails",
 						"type": "DatasetReference"
 					}
 				],
