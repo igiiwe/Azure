@@ -15,6 +15,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'container'"
 		},
+		"Northwind_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Northwind'"
+		},
+		"Northwind_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Northwind'"
+		},
+		"NorthwindDest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NorthwindDest'"
+		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"type": "string",
 			"defaultValue": "tfund.database.windows.net"
@@ -25,6 +37,10 @@
 		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 			"type": "secureString"
+		},
+		"Northwind_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EUROPE\\oasobogungod"
 		}
 	},
 	"variables": {
@@ -741,16 +757,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/OnPremHost')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/OnPremSSIS')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -778,6 +784,16 @@
 						"licenseType": "LicenseIncluded"
 					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/streamAnalytics')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
 			},
 			"dependsOn": []
 		},
@@ -826,6 +842,319 @@
 				"[concat(variables('factoryId'), '/datasets/csvFile')]",
 				"[concat(variables('factoryId'), '/datasets/tfund_database')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TSQL2012')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FromOnPremToCloud",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "dbo.Alphabetical list of products"
+							},
+							{
+								"name": "Destination",
+								"value": "csvfile//"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ProductID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 1
+										}
+									},
+									{
+										"source": {
+											"name": "ProductName",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 2
+										}
+									},
+									{
+										"source": {
+											"name": "SupplierID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 3
+										}
+									},
+									{
+										"source": {
+											"name": "CategoryID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 4
+										}
+									},
+									{
+										"source": {
+											"name": "QuantityPerUnit",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 5
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "Decimal"
+										},
+										"sink": {
+											"type": "Decimal",
+											"ordinal": 6
+										}
+									},
+									{
+										"source": {
+											"name": "UnitsInStock",
+											"type": "Int16"
+										},
+										"sink": {
+											"type": "Int16",
+											"ordinal": 7
+										}
+									},
+									{
+										"source": {
+											"name": "UnitsOnOrder",
+											"type": "Int16"
+										},
+										"sink": {
+											"type": "Int16",
+											"ordinal": 8
+										}
+									},
+									{
+										"source": {
+											"name": "ReorderLevel",
+											"type": "Int16"
+										},
+										"sink": {
+											"type": "Int16",
+											"ordinal": 9
+										}
+									},
+									{
+										"source": {
+											"name": "Discontinued",
+											"type": "Boolean"
+										},
+										"sink": {
+											"type": "Boolean",
+											"ordinal": 10
+										}
+									},
+									{
+										"source": {
+											"name": "CategoryName",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 11
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Northwind",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "csvFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"enableStaging": false
+						}
+					}
+				],
+				"folder": {
+					"name": "DataMovement"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Northwind')]",
+				"[concat(variables('factoryId'), '/datasets/csvFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwind')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "SqlServer",
+				"typeProperties": {
+					"connectionString": "[parameters('Northwind_connectionString')]",
+					"userName": "[parameters('Northwind_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Northwind_password')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "streamAnalytics",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/streamAnalytics')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwind')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SupplierID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CategoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "QuantityPerUnit",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "UnitsInStock",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "UnitsOnOrder",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "ReorderLevel",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discontinued",
+						"type": "bit"
+					},
+					{
+						"name": "CategoryName",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Alphabetical list of products"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NorthwindDest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('NorthwindDest_connectionString')]"
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }

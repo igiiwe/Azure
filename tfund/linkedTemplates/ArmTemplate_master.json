@@ -15,6 +15,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'container'"
 		},
+		"Northwind_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'Northwind'"
+		},
+		"Northwind_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Northwind'"
+		},
+		"NorthwindDest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NorthwindDest'"
+		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"type": "string",
 			"defaultValue": "tfund.database.windows.net"
@@ -25,6 +37,10 @@
 		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 			"type": "secureString"
+		},
+		"Northwind_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EUROPE\\oasobogungod"
 		},
 		"containerUri": {
 			"type": "string",
@@ -59,6 +75,15 @@
 					"container_connectionString": {
 						"value": "[parameters('container_connectionString')]"
 					},
+					"NorthwindDest_connectionString": {
+						"value": "[parameters('NorthwindDest_connectionString')]"
+					},
+					"Northwind_connectionString": {
+						"value": "[parameters('Northwind_connectionString')]"
+					},
+					"Northwind_password": {
+						"value": "[parameters('Northwind_password')]"
+					},
 					"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 						"value": "[parameters('OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint')]"
 					},
@@ -67,6 +92,9 @@
 					},
 					"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 						"value": "[parameters('OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword')]"
+					},
+					"Northwind_properties_typeProperties_userName": {
+						"value": "[parameters('Northwind_properties_typeProperties_userName')]"
 					}
 				}
 			},

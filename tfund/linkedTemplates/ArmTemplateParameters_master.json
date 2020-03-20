@@ -11,6 +11,15 @@
 		"container_connectionString": {
 			"value": ""
 		},
+		"Northwind_connectionString": {
+			"value": ""
+		},
+		"Northwind_password": {
+			"value": ""
+		},
+		"NorthwindDest_connectionString": {
+			"value": ""
+		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"value": "tfund.database.windows.net"
 		},
@@ -19,6 +28,9 @@
 		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 			"value": ""
+		},
+		"Northwind_properties_typeProperties_userName": {
+			"value": "EUROPE\\oasobogungod"
 		},
 		"containerUri": {
 			"value": ""

@@ -1,0 +1,271 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "tfund"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/TSQL2012')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FromOnPremToCloud",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "dbo.Alphabetical list of products"
+							},
+							{
+								"name": "Destination",
+								"value": "csvfile//"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ProductID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 1
+										}
+									},
+									{
+										"source": {
+											"name": "ProductName",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 2
+										}
+									},
+									{
+										"source": {
+											"name": "SupplierID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 3
+										}
+									},
+									{
+										"source": {
+											"name": "CategoryID",
+											"type": "Int32"
+										},
+										"sink": {
+											"type": "Int32",
+											"ordinal": 4
+										}
+									},
+									{
+										"source": {
+											"name": "QuantityPerUnit",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 5
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "Decimal"
+										},
+										"sink": {
+											"type": "Decimal",
+											"ordinal": 6
+										}
+									},
+									{
+										"source": {
+											"name": "UnitsInStock",
+											"type": "Int16"
+										},
+										"sink": {
+											"type": "Int16",
+											"ordinal": 7
+										}
+									},
+									{
+										"source": {
+											"name": "UnitsOnOrder",
+											"type": "Int16"
+										},
+										"sink": {
+											"type": "Int16",
+											"ordinal": 8
+										}
+									},
+									{
+										"source": {
+											"name": "ReorderLevel",
+											"type": "Int16"
+										},
+										"sink": {
+											"type": "Int16",
+											"ordinal": 9
+										}
+									},
+									{
+										"source": {
+											"name": "Discontinued",
+											"type": "Boolean"
+										},
+										"sink": {
+											"type": "Boolean",
+											"ordinal": 10
+										}
+									},
+									{
+										"source": {
+											"name": "CategoryName",
+											"type": "String"
+										},
+										"sink": {
+											"type": "String",
+											"ordinal": 11
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Northwind",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "csvFile",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"folder": {
+					"name": "DataMovement"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Northwind')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Northwind')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SupplierID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CategoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "QuantityPerUnit",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "UnitsInStock",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "UnitsOnOrder",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "ReorderLevel",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discontinued",
+						"type": "bit"
+					},
+					{
+						"name": "CategoryName",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Alphabetical list of products"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
