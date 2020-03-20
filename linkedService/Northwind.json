@@ -1,0 +1,17 @@
+{
+	"name": "Northwind",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=True;data source=L-DE-22H64Q2;initial catalog=Northwind",
+			"userName": "EUROPE\\oasobogungod",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlMTkwZmRjMC0zMmRkLTQyYmUtYjgyYi1hMmVhMGQxODk5MTEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "streamAnalytics",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
