@@ -119,6 +119,34 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/TransformPipeline')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/triggerPB')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "NorthwindDB",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 1,
+						"startTime": "2020-03-21T18:59:00.000Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
