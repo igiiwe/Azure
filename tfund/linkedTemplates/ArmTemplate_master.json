@@ -11,10 +11,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
-		"container_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'container'"
-		},
 		"Northwind_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'Northwind'"
@@ -27,6 +23,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'NorthwindDest'"
 		},
+		"container_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'container'"
+		},
+		"LDE22H64Q2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LDE22H64Q2'"
+		},
+		"Northwind_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "EUROPE\\oasobogungod"
+		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogServerEndpoint": {
 			"type": "string",
 			"defaultValue": "tfund.database.windows.net"
@@ -37,10 +45,6 @@
 		},
 		"OnPremSSIS_properties_typeProperties_ssisProperties_catalogInfo_catalogAdminPassword": {
 			"type": "secureString"
-		},
-		"Northwind_properties_typeProperties_userName": {
-			"type": "string",
-			"defaultValue": "EUROPE\\oasobogungod"
 		},
 		"containerUri": {
 			"type": "string",
@@ -72,11 +76,14 @@
 					"AzureSqlDatabase1_connectionString": {
 						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
 					},
+					"NorthwindDest_connectionString": {
+						"value": "[parameters('NorthwindDest_connectionString')]"
+					},
 					"container_connectionString": {
 						"value": "[parameters('container_connectionString')]"
 					},
-					"NorthwindDest_connectionString": {
-						"value": "[parameters('NorthwindDest_connectionString')]"
+					"LDE22H64Q2_connectionString": {
+						"value": "[parameters('LDE22H64Q2_connectionString')]"
 					},
 					"Northwind_connectionString": {
 						"value": "[parameters('Northwind_connectionString')]"
@@ -99,6 +106,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
 		}
 	]
 }

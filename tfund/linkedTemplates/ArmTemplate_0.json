@@ -11,13 +11,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
+		"NorthwindDest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'NorthwindDest'"
+		},
 		"container_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'container'"
 		},
-		"NorthwindDest_connectionString": {
+		"LDE22H64Q2_connectionString": {
 			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'NorthwindDest'"
+			"metadata": "Secure string for 'connectionString' of 'LDE22H64Q2'"
 		},
 		"Northwind_connectionString": {
 			"type": "secureString",
@@ -56,6 +60,19 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NorthwindDest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('NorthwindDest_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -115,17 +132,43 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NorthwindDest')]",
+			"name": "[concat(parameters('factoryName'), '/LDE22H64Q2')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureBlobStorage",
+				"type": "AzureSqlDatabase",
 				"typeProperties": {
-					"connectionString": "[parameters('NorthwindDest_connectionString')]"
+					"connectionString": "[parameters('LDE22H64Q2_connectionString')]"
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NtwestDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "container",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "nwdatabase"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/container')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/csvFile')]",
@@ -724,311 +767,24 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/NtwestDB')]",
+			"name": "[concat(parameters('factoryName'), '/LDE22H64Q2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "container",
+					"referenceName": "LDE22H64Q2",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "nwdatabase"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/container')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SalesMarket')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "sale data Import",
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "csvFile",
-								"type": "DatasetReference"
-							},
-							"name": "Sales"
-						},
-						{
-							"dataset": {
-								"referenceName": "tfund_database",
-								"type": "DatasetReference"
-							},
-							"name": "AzureDatabase"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "tfund_database",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Mergedataset"
-						}
-					],
-					"script": "source(output(\n\t\tColumn_1 as string,\n\t\tColumn_2 as string,\n\t\tColumn_3 as string,\n\t\tColumn_4 as string,\n\t\tColumn_5 as string,\n\t\tColumn_6 as string,\n\t\tColumn_7 as string,\n\t\tColumn_8 as string,\n\t\tColumn_9 as string,\n\t\tColumn_10 as string,\n\t\tColumn_11 as string,\n\t\tColumn_12 as string,\n\t\tColumn_13 as string,\n\t\tColumn_14 as string,\n\t\tColumn_15 as string,\n\t\tColumn_16 as string,\n\t\tColumn_17 as string,\n\t\tColumn_18 as string,\n\t\tColumn_19 as string,\n\t\tColumn_20 as string,\n\t\tColumn_21 as string,\n\t\tColumn_22 as string,\n\t\tColumn_23 as string,\n\t\tColumn_24 as string,\n\t\tColumn_25 as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Sales\nsource(output(\n\t\tColumn_1 as string,\n\t\tborough as integer,\n\t\tneighborhood as string,\n\t\tbuilding_class_category as string,\n\t\ttax_class as string,\n\t\tblock as integer,\n\t\tlot as string,\n\t\teasement as string,\n\t\tbuilding_class as string,\n\t\taddress as string,\n\t\tapartment_number as string,\n\t\tzip_code as string,\n\t\tresidential_units as string,\n\t\tcommercial_units as string,\n\t\ttotal_units as string,\n\t\tland_sqft as string,\n\t\tgross_sqft as string,\n\t\tyear_built as string,\n\t\ttax_class_at_sale as string,\n\t\tbuilding_class_at_sale as string,\n\t\tsale_price as double,\n\t\tyear_of_sale as integer,\n\t\tBorough1 as string,\n\t\tCD as string,\n\t\tCT2010 as string,\n\t\tCB2010 as string,\n\t\tSchoolDist as string,\n\t\tCouncil as string,\n\t\tZipCode as string,\n\t\tFireComp as string,\n\t\tPolicePrct as string,\n\t\tHealthCent as string,\n\t\tHealthArea as string,\n\t\tSanitBoro as string,\n\t\tSanitDistr as string,\n\t\tSanitSub as string,\n\t\tAddress1 as string,\n\t\tZoneDist1 as string,\n\t\tZoneDist2 as string,\n\t\tZoneDist3 as string,\n\t\tZoneDist4 as string,\n\t\tOverlay1 as string,\n\t\tOverlay2 as string,\n\t\tSPDist1 as string,\n\t\tSPDist2 as string,\n\t\tSPDist3 as string,\n\t\tLtdHeight as string,\n\t\tSplitZone as string,\n\t\tBldgClass as string,\n\t\tLandUse as string,\n\t\tEasements as string,\n\t\tOwnerType as string,\n\t\tOwnerName as string,\n\t\tLotArea as string,\n\t\tBldgArea as string,\n\t\tComArea as string,\n\t\tResArea as string,\n\t\tOfficeArea as string,\n\t\tRetailArea as string,\n\t\tGarageArea as string,\n\t\tStrgeArea as string,\n\t\tFactryArea as string,\n\t\tOtherArea as string,\n\t\tAreaSource as string,\n\t\tNumBldgs as string,\n\t\tNumFloors as string,\n\t\tUnitsRes as string,\n\t\tUnitsTotal as string,\n\t\tLotFront as string,\n\t\tLotDepth as string,\n\t\tBldgFront as string,\n\t\tBldgDepth as string,\n\t\tExt as string,\n\t\tProxCode as string,\n\t\tIrrLotCode as string,\n\t\tLotType as string,\n\t\tBsmtCode as string,\n\t\tAssessLand as string,\n\t\tAssessTot as string,\n\t\tExemptLand as string,\n\t\tExemptTot as string,\n\t\tYearBuilt as string,\n\t\tYearAlter1 as string,\n\t\tYearAlter2 as string,\n\t\tHistDist as string,\n\t\tLandmark as string,\n\t\tBuiltFAR as string,\n\t\tResidFAR as string,\n\t\tCommFAR as string,\n\t\tFacilFAR as string,\n\t\tBoroCode as string,\n\t\tBBL as string,\n\t\tCondoNo as string,\n\t\tTract2010 as string,\n\t\tXCoord as string,\n\t\tYCoord as string,\n\t\tZoneMap as string,\n\t\tZMCode as string,\n\t\tSanborn as string,\n\t\tTaxMap as string,\n\t\tEDesigNum as string,\n\t\tAPPBBL as string,\n\t\tAPPDate as string,\n\t\tPLUTOMapID as string,\n\t\tFIRM07_FLA as string,\n\t\tPFIRM15_FL as string,\n\t\tVersion as string,\n\t\tMAPPLUTO_F as string,\n\t\tSHAPE_Leng as string,\n\t\tSHAPE_Area as string,\n\t\tSales_date as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureDatabase\nSales, AzureDatabase union(byName: true,\n\tpartitionBy('hash', 1))~> Mergedataset\nMergedataset sink(input(\n\t\tColumn_1 as string,\n\t\tborough as integer,\n\t\tneighborhood as string,\n\t\tbuilding_class_category as string,\n\t\ttax_class as string,\n\t\tblock as integer,\n\t\tlot as string,\n\t\teasement as string,\n\t\tbuilding_class as string,\n\t\taddress as string,\n\t\tapartment_number as string,\n\t\tzip_code as string,\n\t\tresidential_units as string,\n\t\tcommercial_units as string,\n\t\ttotal_units as string,\n\t\tland_sqft as string,\n\t\tgross_sqft as string,\n\t\tyear_built as string,\n\t\ttax_class_at_sale as string,\n\t\tbuilding_class_at_sale as string,\n\t\tsale_price as double,\n\t\tyear_of_sale as integer,\n\t\tBorough1 as string,\n\t\tCD as string,\n\t\tCT2010 as string,\n\t\tCB2010 as string,\n\t\tSchoolDist as string,\n\t\tCouncil as string,\n\t\tZipCode as string,\n\t\tFireComp as string,\n\t\tPolicePrct as string,\n\t\tHealthCent as string,\n\t\tHealthArea as string,\n\t\tSanitBoro as string,\n\t\tSanitDistr as string,\n\t\tSanitSub as string,\n\t\tAddress1 as string,\n\t\tZoneDist1 as string,\n\t\tZoneDist2 as string,\n\t\tZoneDist3 as string,\n\t\tZoneDist4 as string,\n\t\tOverlay1 as string,\n\t\tOverlay2 as string,\n\t\tSPDist1 as string,\n\t\tSPDist2 as string,\n\t\tSPDist3 as string,\n\t\tLtdHeight as string,\n\t\tSplitZone as string,\n\t\tBldgClass as string,\n\t\tLandUse as string,\n\t\tEasements as string,\n\t\tOwnerType as string,\n\t\tOwnerName as string,\n\t\tLotArea as string,\n\t\tBldgArea as string,\n\t\tComArea as string,\n\t\tResArea as string,\n\t\tOfficeArea as string,\n\t\tRetailArea as string,\n\t\tGarageArea as string,\n\t\tStrgeArea as string,\n\t\tFactryArea as string,\n\t\tOtherArea as string,\n\t\tAreaSource as string,\n\t\tNumBldgs as string,\n\t\tNumFloors as string,\n\t\tUnitsRes as string,\n\t\tUnitsTotal as string,\n\t\tLotFront as string,\n\t\tLotDepth as string,\n\t\tBldgFront as string,\n\t\tBldgDepth as string,\n\t\tExt as string,\n\t\tProxCode as string,\n\t\tIrrLotCode as string,\n\t\tLotType as string,\n\t\tBsmtCode as string,\n\t\tAssessLand as string,\n\t\tAssessTot as string,\n\t\tExemptLand as string,\n\t\tExemptTot as string,\n\t\tYearBuilt as string,\n\t\tYearAlter1 as string,\n\t\tYearAlter2 as string,\n\t\tHistDist as string,\n\t\tLandmark as string,\n\t\tBuiltFAR as string,\n\t\tResidFAR as string,\n\t\tCommFAR as string,\n\t\tFacilFAR as string,\n\t\tBoroCode as string,\n\t\tBBL as string,\n\t\tCondoNo as string,\n\t\tTract2010 as string,\n\t\tXCoord as string,\n\t\tYCoord as string,\n\t\tZoneMap as string,\n\t\tZMCode as string,\n\t\tSanborn as string,\n\t\tTaxMap as string,\n\t\tEDesigNum as string,\n\t\tAPPBBL as string,\n\t\tAPPDate as string,\n\t\tPLUTOMapID as string,\n\t\tFIRM07_FLA as string,\n\t\tPFIRM15_FL as string,\n\t\tVersion as string,\n\t\tMAPPLUTO_F as string,\n\t\tSHAPE_Leng as string,\n\t\tSHAPE_Area as string,\n\t\tSales_date as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/csvFile')]",
-				"[concat(variables('factoryId'), '/datasets/tfund_database')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Northwind')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Northwind",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "ProductID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ProductName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "SupplierID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CategoryID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "QuantityPerUnit",
-						"type": "nvarchar"
-					},
-					{
-						"name": "UnitPrice",
-						"type": "money",
-						"precision": 19,
-						"scale": 4
-					},
-					{
-						"name": "UnitsInStock",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "UnitsOnOrder",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "ReorderLevel",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "Discontinued",
-						"type": "bit"
-					},
-					{
-						"name": "CategoryName",
-						"type": "nvarchar"
-					}
-				],
+				"type": "AzureSqlTable",
+				"schema": [],
 				"typeProperties": {
 					"schema": "dbo",
-					"table": "Alphabetical list of products"
+					"table": "PowerBIStream"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OrderTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Northwind",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "OrderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ProductID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "UnitPrice",
-						"type": "money",
-						"precision": 19,
-						"scale": 4
-					},
-					{
-						"name": "Quantity",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "Discount",
-						"type": "real",
-						"precision": 7
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Orders"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OrderDetails')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Northwind",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "OrderID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "ProductID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "UnitPrice",
-						"type": "money",
-						"precision": 19,
-						"scale": 4
-					},
-					{
-						"name": "Quantity",
-						"type": "smallint",
-						"precision": 5
-					},
-					{
-						"name": "Discount",
-						"type": "real",
-						"precision": 7
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Order Details"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Region')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Northwind",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "RegionID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "RegionDescription",
-						"type": "nchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Region"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Shippers')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Northwind",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [
-					{
-						"name": "ShipperID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "CompanyName",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Phone",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "dbo",
-					"table": "Shippers"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+				"[concat(variables('factoryId'), '/linkedServices/LDE22H64Q2')]"
 			]
 		},
 		{
@@ -1132,6 +888,242 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Northwind')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SupplierID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CategoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "QuantityPerUnit",
+						"type": "nvarchar"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "UnitsInStock",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "UnitsOnOrder",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "ReorderLevel",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discontinued",
+						"type": "bit"
+					},
+					{
+						"name": "CategoryName",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Alphabetical list of products"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderDetails')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "OrderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "Quantity",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discount",
+						"type": "real",
+						"precision": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Order Details"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "OrderID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ProductID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPrice",
+						"type": "money",
+						"precision": 19,
+						"scale": 4
+					},
+					{
+						"name": "Quantity",
+						"type": "smallint",
+						"precision": 5
+					},
+					{
+						"name": "Discount",
+						"type": "real",
+						"precision": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Orders"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Region')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "RegionID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "RegionDescription",
+						"type": "nchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Region"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Shippers')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Northwind",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "ShipperID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Shippers"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Northwind')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Suppliers')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1203,49 +1195,50 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/TransformPipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/SalesMarket')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "dataTransfer",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "SalesMarket",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"Sales": {},
-									"AzureDatabase": {},
-									"sink1": {}
-								}
+				"description": "sale data Import",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "csvFile",
+								"type": "DatasetReference"
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							}
+							"name": "Sales"
+						},
+						{
+							"dataset": {
+								"referenceName": "tfund_database",
+								"type": "DatasetReference"
+							},
+							"name": "AzureDatabase"
 						}
-					}
-				],
-				"folder": {
-					"name": "pipelineData"
-				},
-				"annotations": []
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "LDE22H64Q2",
+								"type": "DatasetReference"
+							},
+							"name": "PowerBI"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Mergedataset"
+						}
+					],
+					"script": "source(output(\n\t\tORDERNUMBER as string,\n\t\tQUANTITYORDERED as string,\n\t\tPRICEEACH as string,\n\t\tORDERLINENUMBER as string,\n\t\tSALES as string,\n\t\tORDERDATE as string,\n\t\tSTATUS as string,\n\t\tQTR_ID as string,\n\t\tMONTH_ID as string,\n\t\tYEAR_ID as string,\n\t\tPRODUCTLINE as string,\n\t\tMSRP as string,\n\t\tPRODUCTCODE as string,\n\t\tCUSTOMERNAME as string,\n\t\tPHONE as string,\n\t\tADDRESSLINE1 as string,\n\t\tADDRESSLINE2 as string,\n\t\tCITY as string,\n\t\tSTATE as string,\n\t\tPOSTALCODE as string,\n\t\tCOUNTRY as string,\n\t\tTERRITORY as string,\n\t\tCONTACTLASTNAME as string,\n\t\tCONTACTFIRSTNAME as string,\n\t\tDEALSIZE as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false) ~> Sales\nsource(output(\n\t\tColumn_1 as string,\n\t\tborough as integer,\n\t\tneighborhood as string,\n\t\tbuilding_class_category as string,\n\t\ttax_class as string,\n\t\tblock as integer,\n\t\tlot as string,\n\t\teasement as string,\n\t\tbuilding_class as string,\n\t\taddress as string,\n\t\tapartment_number as string,\n\t\tzip_code as string,\n\t\tresidential_units as string,\n\t\tcommercial_units as string,\n\t\ttotal_units as string,\n\t\tland_sqft as string,\n\t\tgross_sqft as string,\n\t\tyear_built as string,\n\t\ttax_class_at_sale as string,\n\t\tbuilding_class_at_sale as string,\n\t\tsale_price as double,\n\t\tyear_of_sale as integer,\n\t\tBorough1 as string,\n\t\tCD as string,\n\t\tCT2010 as string,\n\t\tCB2010 as string,\n\t\tSchoolDist as string,\n\t\tCouncil as string,\n\t\tZipCode as string,\n\t\tFireComp as string,\n\t\tPolicePrct as string,\n\t\tHealthCent as string,\n\t\tHealthArea as string,\n\t\tSanitBoro as string,\n\t\tSanitDistr as string,\n\t\tSanitSub as string,\n\t\tAddress1 as string,\n\t\tZoneDist1 as string,\n\t\tZoneDist2 as string,\n\t\tZoneDist3 as string,\n\t\tZoneDist4 as string,\n\t\tOverlay1 as string,\n\t\tOverlay2 as string,\n\t\tSPDist1 as string,\n\t\tSPDist2 as string,\n\t\tSPDist3 as string,\n\t\tLtdHeight as string,\n\t\tSplitZone as string,\n\t\tBldgClass as string,\n\t\tLandUse as string,\n\t\tEasements as string,\n\t\tOwnerType as string,\n\t\tOwnerName as string,\n\t\tLotArea as string,\n\t\tBldgArea as string,\n\t\tComArea as string,\n\t\tResArea as string,\n\t\tOfficeArea as string,\n\t\tRetailArea as string,\n\t\tGarageArea as string,\n\t\tStrgeArea as string,\n\t\tFactryArea as string,\n\t\tOtherArea as string,\n\t\tAreaSource as string,\n\t\tNumBldgs as string,\n\t\tNumFloors as string,\n\t\tUnitsRes as string,\n\t\tUnitsTotal as string,\n\t\tLotFront as string,\n\t\tLotDepth as string,\n\t\tBldgFront as string,\n\t\tBldgDepth as string,\n\t\tExt as string,\n\t\tProxCode as string,\n\t\tIrrLotCode as string,\n\t\tLotType as string,\n\t\tBsmtCode as string,\n\t\tAssessLand as string,\n\t\tAssessTot as string,\n\t\tExemptLand as string,\n\t\tExemptTot as string,\n\t\tYearBuilt as string,\n\t\tYearAlter1 as string,\n\t\tYearAlter2 as string,\n\t\tHistDist as string,\n\t\tLandmark as string,\n\t\tBuiltFAR as string,\n\t\tResidFAR as string,\n\t\tCommFAR as string,\n\t\tFacilFAR as string,\n\t\tBoroCode as string,\n\t\tBBL as string,\n\t\tCondoNo as string,\n\t\tTract2010 as string,\n\t\tXCoord as string,\n\t\tYCoord as string,\n\t\tZoneMap as string,\n\t\tZMCode as string,\n\t\tSanborn as string,\n\t\tTaxMap as string,\n\t\tEDesigNum as string,\n\t\tAPPBBL as string,\n\t\tAPPDate as string,\n\t\tPLUTOMapID as string,\n\t\tFIRM07_FLA as string,\n\t\tPFIRM15_FL as string,\n\t\tVersion as string,\n\t\tMAPPLUTO_F as string,\n\t\tSHAPE_Leng as string,\n\t\tSHAPE_Area as string,\n\t\tSales_date as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureDatabase\nSales, AzureDatabase union(byName: true,\n\tpartitionBy('dynamicRange', 2,\n\t\tORDERNUMBER\n\t))~> Mergedataset\nMergedataset sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> PowerBI"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/SalesMarket')]"
+				"[concat(variables('factoryId'), '/datasets/csvFile')]",
+				"[concat(variables('factoryId'), '/datasets/tfund_database')]",
+				"[concat(variables('factoryId'), '/datasets/LDE22H64Q2')]"
 			]
 		},
 		{
@@ -2278,71 +2271,6 @@
 				"[concat(variables('factoryId'), '/datasets/Employee')]",
 				"[concat(variables('factoryId'), '/datasets/Suppliers')]",
 				"[concat(variables('factoryId'), '/datasets/csvFile')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MovePackage')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Execute SSIS in clude",
-						"type": "ExecuteSSISPackage",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"packageLocation": {
-								"packagePath": "LiftAndShift/AzureLoan/Data_copy.dtsx",
-								"type": "SSISDB"
-							},
-							"environmentPath": null,
-							"connectVia": {
-								"referenceName": "OnPremSSIS",
-								"type": "IntegrationRuntimeReference"
-							},
-							"loggingLevel": "Basic",
-							"projectConnectionManagers": {},
-							"packageConnectionManagers": {}
-						}
-					},
-					{
-						"name": "Execute Transformationpipeline",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Execute SSIS in clude",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "TransformPipeline",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {}
-						}
-					}
-				],
-				"folder": {
-					"name": "pipelineData"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/OnPremSSIS')]",
-				"[concat(variables('factoryId'), '/pipelines/TransformPipeline')]"
 			]
 		}
 	]
