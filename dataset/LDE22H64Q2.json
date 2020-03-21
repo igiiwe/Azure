@@ -1,0 +1,16 @@
+{
+	"name": "LDE22H64Q2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LDE22H64Q2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "PowerBIStream"
+		}
+	}
+}
